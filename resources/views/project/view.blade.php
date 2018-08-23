@@ -26,6 +26,23 @@
                             <td>{{ $project->description }}</td>
                         </tr>
                         <tr>
+                            <td>{{ __('Categories') }}:</td>
+                            <td>
+                                <div class="form_group">
+                                    @foreach($project->categories as $category)
+                                        <label for="category_{{ $category->id }}">
+                                             {{ $category->title }}
+                                        </label>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ __('Team') }}:</td>
+                            <td>{{ $project->teams->title }}</td>
+                        </tr>
+                        <tr>
                             <td>{{ __('Slug') }}:</td>
                             <td>{{ $project->slug }}</td>
                         </tr>
@@ -44,9 +61,8 @@
             <div class="card">
                 <div class="card-header">Actions</div>
                 <div class="card-body">
-                    <a class="btn btn-block btn-outline-dark" href="{{ route('project.edit', [$project->id]) }}">{{ __('Edit') }}</a>
-                    <a class="btn btn-block btn-outline-dark" href="{{ route('project.edit', [$project->id]) }}">{{ __('Edit') }}</a>
-                    <a class="btn btn-block btn-outline-dark" href="{{ route('project.edit', [$project->id]) }}">{{ __('Edit') }}</a>
+                    <a class="btn btn-block btn-outline-dark" href="{{ route('project.edit', [$project->id]) }}">{{ __('Edit project') }}</a>
+                    <a class="btn btn-block btn-outline-dark" href="{{ route('team.show', [$project->id]) }}">{{ __('Team members') }}</a>
                 </div>
             </div>
         </div>

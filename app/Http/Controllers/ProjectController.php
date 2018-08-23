@@ -8,6 +8,7 @@ use App\Category;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Project;
+use App\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -45,8 +46,9 @@ class ProjectController extends Controller
     public function create(): View
     {
         $categories = Category::all();
+        $teams = Team::all();
 
-        return view('project.create', compact('categories'));
+        return view('project.create', compact('categories', 'teams'));
     }
 
     /**
@@ -60,6 +62,7 @@ class ProjectController extends Controller
         $data = [
             'title' => $request->getTitle(),
             'description' => $request->getDescription(),
+            'team_id' => $request->getTeamId(),
             'slug' => $request->getSlug(),
         ];
 
@@ -91,8 +94,9 @@ class ProjectController extends Controller
     public function edit(Project $project): View
     {
         $categories = Category::all();
+        $teams = Team::all();
 
-        return view('project.edit', compact('project', 'categories'));
+        return view('project.edit', compact('project', 'categories', 'teams'));
     }
 
     /**
@@ -106,6 +110,7 @@ class ProjectController extends Controller
     {
         $project->title = $request->getTitle();
         $project->description = $request->getDescription();
+        $project->team_id = $request->getTeamId();
         $project->slug = $request->getSlug();
 
         $project->categories()->sync($request->getCategoriesIds());

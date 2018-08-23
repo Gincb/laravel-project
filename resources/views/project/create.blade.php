@@ -45,9 +45,23 @@
                                 </label>
                                 <br>
                                 @endforeach
+
                             @if($errors->has('category'))
                                 <div class="alert-danger">{{ $errors->first('category') }}</div>
                                 @endif
+                        </div>
+
+                        <div class="form-group">
+                            <label for="team_id">{{ __('Teams') }}:</label>
+                            <select id="team_id" class="form-control" name="team_id">
+                                <option value=""> ---</option>
+                                @foreach($teams as $team)
+                                    <option value="{{ $team->id }}" {{ ($team->id == old('team_id') ? 'selected' : '') }}>{{ $team->title }}</option>
+                                @endforeach
+                            </select>
+                            @if($errors->has('team_id'))
+                                <div class="alert-danger">{{ $errors->first('team_id') }}</div>
+                            @endif
                         </div>
 
                         <div class="form-group">

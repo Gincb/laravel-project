@@ -4,23 +4,23 @@ declare(strict_types = 1);
 
 namespace App\Http\Requests;
 
-use App\Project;
+use App\Team;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
 /**
- * Class ProjectStoreRequest
+ * Class TeamStoreRequest
  * @package App\Http\Requests
  */
-class ProjectStoreRequest extends FormRequest
+class TeamStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize():bool
+    public function authorize()
     {
         return true;
     }
@@ -34,15 +34,10 @@ class ProjectStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|min:3|max:191|string',
-            'description' => 'required',
-            'team_id' => [
+            'member' => [
                 'required',
-                'exists:teams,id',
-            ],
-            'category' => [
-                'nullable',
                 'array',
-                'exists:categories,id',
+                'exists:members,id'
             ]
         ];
     }
@@ -53,15 +48,14 @@ class ProjectStoreRequest extends FormRequest
     protected function getValidatorInstance(): Validator
     {
         $validator = parent::getValidatorInstance();
-
-        $validator->after(function (Validator $validator){
-            if($this->isMethod('post')&& $this->slugExists()){
-                $validator->errors()->add('title', 'Slug by this name exists on DB');
-
+        $validator->after(function (Validator $validator) {
+            if ($this->isMethod('post') && $this->slugExists()) {
+                $validator
+                    ->errors()
+                    ->add('title', 'Slug by name exists on DB');
                 return;
             }
         });
-
         return $validator;
     }
 
@@ -70,40 +64,19 @@ class ProjectStoreRequest extends FormRequest
      */
     protected function slugExists(): bool
     {
-        $title = $this->getTitle();
-
-        if(!$title){
+        $slug = Team::whereSlug($this->getSlug())->get();
+        if (!empty($slug->toArray())) {
             return true;
         }
-
-        $slug = Project::whereSlug($title)->get();
-
-        if(!empty($slug->toArray())){
-            return true;
-        }
-
         return false;
     }
 
     /**
-     * @return array|null|string
+     * @return null|string
      */
     public function getTitle(): ? string
     {
         return $this->input('title');
-    }
-
-    /**
-     * @return array|null|string
-     */
-    public function getDescription(): string
-    {
-        return $this->input('description');
-    }
-
-    public function getTeamId(): int
-    {
-        return (int)$this->input('team_id');
     }
 
     /**
@@ -114,11 +87,8 @@ class ProjectStoreRequest extends FormRequest
         return Str::slug($this->getTitle());
     }
 
-    /**
-     * @return array
-     */
-    public function getCategoriesIds(): array
+    public function getMembersIds(): array
     {
-        return $this->input('category', []);
+        return $this->input('member', []);
     }
 }

@@ -24,7 +24,12 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('project', 'ProjectController');
+Route::resource('team', 'TeamController');
 
 Route::group(['middleware' => ['auth']], function (){
     Route::resource('category', 'CategoryController')->except(['show', 'destroy']);
+    Route::resource('user', 'UserController')->only(['index']);
+
+    Route::resource('member', 'MemberController')->except(['show', 'destroy']);
+
 });

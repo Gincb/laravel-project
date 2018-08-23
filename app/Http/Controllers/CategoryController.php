@@ -48,7 +48,7 @@ class CategoryController extends Controller
     {
         Category::create([
            'title' => $request->getTitle(),
-            'slug' =>$request->getSlug(),
+           'slug' =>$request->getSlug(),
         ]);
 
         return redirect()->route('category.index')->with('status', 'Category created successfully!');
