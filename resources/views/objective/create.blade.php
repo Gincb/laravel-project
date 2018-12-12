@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    New Category
+                    New objective
                 </div>
 
                 <div class="card-body">
@@ -16,7 +16,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('category.store') }}" method="post">
+                    <form action="{{ route('objective.store') }}" method="post">
 
                         {{csrf_field()}}
 
@@ -25,6 +25,23 @@
                             <input id="title" class="form-control" type="text" name="title" value="{{ old('title') }}">
                             @if($errors->has('title'))
                                 <div class="alert-danger">{{ $errors->first('title') }}</div>
+                            @endif
+                        </div>
+
+                        <div class="form_group">
+                            <label>{{ __('Tasks') }}</label>
+                            <br>
+                            @foreach($plans as $plan)
+                                <label for="plan_{{ $plan->id }}">
+                                    <input id="plan_{{ $plan->id }}" type="checkbox" name="plan[]"
+                                           value="{{ $plan->id }}"
+                                            {{ (in_array($plan->id, old('plan', $plan->pluck('id')->toArray())) ? 'checked' : '') }}
+                                    > {{ $plan->task }}
+                                </label>
+                                <br>
+                            @endforeach
+                            @if($errors->has('plan'))
+                                <div class="alert-danger">{{ $errors->first('plan') }}</div>
                             @endif
                         </div>
 

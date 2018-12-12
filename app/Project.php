@@ -26,23 +26,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $objective_id
+ * @property-read \App\Objective|null $objectives
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereObjectiveId($value)
  */
 class Project extends Model
 {
     protected $fillable = [
         'title',
+        'cover',
         'description',
         'slug',
         'team_id',
+        'objective_id'
     ];
 
-    public function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(Category::class);
-    }
 
     public function teams(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id', 'id');
+    }
+
+    public function objectives(): BelongsTo
+    {
+        return $this->belongsTo(Objective::class, 'objective_id', 'id');
     }
 }

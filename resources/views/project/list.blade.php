@@ -21,6 +21,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Title</th>
+                            <th>Cover</th>
                             <th>Description</th>
                             <th></th>
                         </tr>
@@ -29,6 +30,11 @@
                             <tr>
                                 <td>{{ $project->id }}</td>
                                 <td>{{ $project->title }}</td>
+                                <td>
+                                    @if ($project->cover)
+                                        <img width="100" src="{{ Storage::url($project->cover) }}">
+                                    @endif
+                                </td>
                                 <td>{{ $project->description }}</td>
                                 <td>
                                     <a class="btn btn-sm btn-outline-dark btn-block" href="{{ route('project.show', [$project->id]) }}">{{ __('View') }}</a>

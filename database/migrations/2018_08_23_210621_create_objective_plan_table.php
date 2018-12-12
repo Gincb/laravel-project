@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCategoryProjectTable extends Migration
+class CreateObjectivePlanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateCategoryProjectTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_project', function (Blueprint $table) {
+        Schema::create('objective_plan', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('project_id');
-            $table->integer('category_id');
-
-            $table->unique(['project_id', 'category_id']);
+            $table->integer('objective_id');
+            $table->integer('plan_id');
+            $table->unique(['objective_id', 'plan_id']);
         });
     }
 
@@ -30,6 +29,6 @@ class CreateCategoryProjectTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_project');
+        Schema::dropIfExists('objective_plan');
     }
 }

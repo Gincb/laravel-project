@@ -6,8 +6,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    Categories List
-                    <a class="btn btn-sm btn-outline-dark" href="{{ route('category.create') }}">{{ __('New') }}</a>
+                    Objectives List
+                    <a class="btn btn-sm btn-outline-dark" href="{{ route('objective.create') }}">{{ __('New') }}</a>
                 </div>
 
                 <div class="card-body">
@@ -25,18 +25,22 @@
                             <th></th>
                         </tr>
 
-                        @foreach($categories as $category)
+                        @foreach($objectives as $objective)
                             <tr>
-                                <td>{{ $category->id }}</td>
-                                <td>{{ $category->title }}</td>
-                                <td>{{ $category->slug }}</td>
+                                <td>{{ $objective->id }}</td>
+                                <td>{{ $objective->title }}</td>
+                                <td>{{ $objective->slug }}</td>
                                 <td>
-                                    <a class="btn btn-sm btn-outline-dark btn-block" href="{{ route('category.edit', [$category->id]) }}">{{ __('Edit') }}</a>
+                                    <a class="btn btn-sm btn-outline-dark btn-block" href="{{ route('objective.show', [$objective->id]) }}">{{ __('View') }}</a>
+                                    <form action="{{ route('objective.destroy', [$objective->id]) }}" method="post">
+                                        {{ csrf_field() }}
+                                        {{ method_field('delete') }}
+                                        <input class="btn btn-sm btn-outline-dark btn-block " type="submit" value="Delete">
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
                     </table>
-
                 </div>
             </div>
         </div>

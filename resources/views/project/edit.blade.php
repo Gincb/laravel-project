@@ -16,7 +16,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('project.update', [$project->id]) }}" method="post">
+                    <form action="{{ route('project.update', [$project->id]) }}" method="post" enctype="multipart/form-data">
 
                         {{ method_field('put') }}
                         {{ csrf_field() }}
@@ -30,27 +30,22 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="cover">{{ __('Cover') }}</label>
+                            @if ($project->cover)
+                                <br>
+                                <img width="200" src="{{ Storage::url($project->cover) }}">
+                            @endif
+                            <input id="cover" class="form-control" type="file" name="cover" accept=".jpg, .jpeg, .png">
+                            @if($errors->has('cover'))
+                                <div class="alert-danger">{{ $errors->first('cover') }}</div>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
                             <label for="description">{{ __('Description') }}:</label>
                             <textarea id="description" class="form-control" name="description">{{ $project->description }}</textarea>
                             @if($errors->has('description'))
                                 <div class="alert-danger">{{ $errors->first('description') }}</div>
-                            @endif
-                        </div>
-
-                        <div class="form_group">
-                            <label>{{ __('Categories') }}</label>
-                            <br>
-                            @foreach($categories as $category)
-                                <label for="category_{{ $category->id }}">
-                                    <input id="category_{{ $category->id }}" type="checkbox" name="category[]"
-                                           value="{{ $category->id }}"
-                                            {{ (in_array($category->id, old('category', $project->categories->pluck('id')->toArray())) ? 'checked' : '') }}
-                                    > {{ $category->title }}
-                                </label>
-                                <br>
-                            @endforeach
-                            @if($errors->has('category'))
-                                <div class="alert-danger">{{ $errors->first('category') }}</div>
                             @endif
                         </div>
 
@@ -68,6 +63,19 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="objective_id">{{ __('Objective') }}:</label>
+                            <select id="objective_id" class="form-control" name="objective_id">
+                                <option value=""> ---</option>
+                                @foreach($objectives as $objective)
+                                    <option value="{{ $objective->id }}" {{ ($objective->id == old('objective_id', $project->objective_id) ? 'selected' : '') }}>{{ $objective->title }}</option>
+                                @endforeach
+                            </select>
+                            @if($errors->has('objective_id'))
+                                <div class="alert-danger">{{ $errors->first('objective_id') }}</div>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
                             <label for="slug">{{ __('Slug') }}:</label>
                             <input id="slug" class="form-control" type="text" name="slug" value="{{ $project->slug }}">
                             @if($errors->has('slug'))
@@ -80,7 +88,7 @@
                         </div>
 
                     </form>
-
+                    <a class="btn btn-outline-dark" href="javascript:history.back();">Back</a>
                 </div>
             </div>
         </div>

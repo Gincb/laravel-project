@@ -1,25 +1,23 @@
 <?php
 
-declare(strict_types = 1);
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCategoriesTable extends Migration
+class CreatePlansTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('plans', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->string('title', 191);
-            $table->string('slug', 191)->unique();
+            $table->string('task', 191);
+            $table->boolean('done', ['0', '1']);
         });
     }
 
@@ -28,8 +26,8 @@ class CreateCategoriesTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('plans');
     }
 }

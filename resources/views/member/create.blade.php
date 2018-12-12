@@ -52,7 +52,7 @@
                         </div>
 
                     </form>
-
+                    <a class="btn btn-outline-dark" href="javascript:history.back();">Back</a>
                 </div>
             </div>
         </div>

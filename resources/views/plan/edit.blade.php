@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    Edit Category
+                    Edit plan
                 </div>
 
                 <div class="card-body">
@@ -16,27 +16,18 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('category.update', [$category->id]) }}" method="post">
+                    <form action="{{ route('plan.update', [$plan->id]) }}" method="post">
 
                         {{ method_field('put') }}
                         {{ csrf_field() }}
 
                         <div class="form-group">
-                            <label for="title">{{ __('Title') }}:</label>
-                            <input id="title" class="form-control" type="text" name="title" value="{{ old('title', $category->title) }}">
-                            @if($errors->has('title'))
-                                <div class="alert-danger">{{ $errors->first('title') }}</div>
+                            <label for="task">{{ __('task') }}:</label>
+                            <input id="task" class="form-control" type="text" name="task" value="{{ old('task', $plan->task) }}">
+                            @if($errors->has('task'))
+                                <div class="alert-danger">{{ $errors->first('task') }}</div>
                             @endif
                         </div>
-
-                        <div class="form-group">
-                            <label for="slug">{{ __('Slug') }}:</label>
-                            <input id="slug" class="form-control" type="text" name="slug" value="{{ old('slug', $category->slug) }}">
-                            @if($errors->has('slug'))
-                                <div class="alert-danger">{{ $errors->first('slug') }}</div>
-                            @endif
-                        </div>
-
                         <div class="form-group">
                             <input class="btn btn-dark-outline" type="submit" value="{{ __('Save') }}">
                         </div>

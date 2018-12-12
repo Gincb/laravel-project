@@ -6,8 +6,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    Members List
-                    <a class="btn btn-sm btn-outline-dark" href="{{ route('member.create') }}">{{ __('New') }}</a>
+                    Categories List
+                    <a class="btn btn-sm btn-outline-dark" href="{{ route('plan.create') }}">{{ __('New') }}</a>
                 </div>
 
                 <div class="card-body">
@@ -20,25 +20,23 @@
                     <table class="table">
                         <tr>
                             <th>ID</th>
-                            <th>First name</th>
-                            <th>Last name</th>
-                            <th>Position</th>
+                            <th>Title</th>
+                            <th>Slug</th>
                             <th></th>
                         </tr>
 
-                        @foreach($members as $member)
+                        @foreach($plans as $plan)
                             <tr>
-                                <td>{{ $member->id }}</td>
-                                <td>{{ $member->first_name }}</td>
-                                <td>{{ $member->last_name }}</td>
-                                <td>{{ $member->position }}</td>
+                                <td>{{ $plan->id }}</td>
+                                <td>{{ $plan->title }}</td>
+                                <td>{{ $plan->slug }}</td>
                                 <td>
-                                    <a class="btn btn-sm btn-outline-dark btn-block" href="{{ route('member.edit', [$member->id]) }}">{{ __('Edit') }}</a>
+                                    <a class="btn btn-sm btn-outline-dark btn-block" href="{{ route('plan.edit', [$plan->id]) }}">{{ __('Edit') }}</a>
                                 </td>
                             </tr>
                         @endforeach
                     </table>
-                    <a class="btn btn-outline-dark" href="javascript:history.back();">Back</a>
+
                 </div>
             </div>
         </div>

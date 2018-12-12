@@ -11,6 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -52,14 +53,29 @@
                                 <a class="nav-link" href="{{ route('user.index') }}">{{ __('Users') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('project.index') }}">{{ __('Project') }}</a>
+                                <a class="nav-link" href="{{ route('project.index') }}">{{ __('Projects') }}</a>
                             </li>
+
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('team.index') }}">{{ __('Teams') }}</a>
+                                <a class="nav-link" href="{{ route('objective.index') }}">{{ __('Objectives') }}</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('category.index') }}">{{ __('Categories') }}</a>
+
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ __('Teams') }} <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('team.index') }}">
+                                        {{ __('Team List') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('member.index') }}">
+                                        {{ __('Members') }}
+                                    </a>
+                                </div>
                             </li>
+
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>

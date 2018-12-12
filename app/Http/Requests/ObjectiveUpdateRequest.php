@@ -4,16 +4,12 @@ declare(strict_types = 1);
 
 namespace App\Http\Requests;
 
-use App\Category;
+use App\Objective;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-/**
- * Class CategoryStoreRequest
- * @package App\Http\Requests
- */
-class CategoryStoreRequest extends FormRequest
+class ObjectiveUpdateRequest extends ObjectiveStoreRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,38 +28,39 @@ class CategoryStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'title' => 'required|min:3|max:191'
-        ];
+        return parent::rules();
     }
 
     /**
-     * @return Validator
+     * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function getValidatorInstance(): Validator
     {
         $validator = parent::getValidatorInstance();
-        $validator->after(function (Validator $validator){
-            if ($this->isMethod('post') && $this->slugExists()){
-                $validator->errors()->add('title', 'Category with this name already exists!');
+        $validator->after(function (Validator $validator) {
+            if ($this->isMethod('put') && $this->slugExists()) {
+                $validator->errors()->add('slug', 'Slug already exists.');
+                return;
             }
-            return;
         });
-
         return $validator;
     }
 
     /**
      * @return bool
      */
-    private function slugExists(): bool
+    protected function slugExists(): bool
     {
-        $category = Category::whereSlug('slug', '=', $this->getSlug())->first();
-
-        if(!empty($category)){
+        $slug = Objective::whereSlug($this->getSlug())
+            ->where(
+                'id',
+                '!=',
+                $this->route()->parameter('objective')->id
+            )
+            ->get();
+        if (!empty($slug->toArray())) {
             return true;
         }
-
         return false;
     }
 
@@ -72,14 +69,6 @@ class CategoryStoreRequest extends FormRequest
      */
     public function getSlug(): string
     {
-        return Str::slug($this->getTitle());
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getTitle(): ? string
-    {
-        return $this->input('title');
+        return Str::slug($this->input('slug') ? $this->input('slug') : $this->getTitle());
     }
 }

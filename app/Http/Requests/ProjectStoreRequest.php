@@ -7,6 +7,7 @@ namespace App\Http\Requests;
 use App\Project;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 /**
@@ -34,16 +35,16 @@ class ProjectStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|min:3|max:191|string',
+            'cover' => 'nullable|image|dimensions:min_width=600,min_height=300',
             'description' => 'required',
             'team_id' => [
                 'required',
                 'exists:teams,id',
             ],
-            'category' => [
-                'nullable',
-                'array',
-                'exists:categories,id',
-            ]
+            'objective_id' => [
+                'required',
+                'exists:objectives,id',
+            ],
         ];
     }
 
@@ -101,9 +102,20 @@ class ProjectStoreRequest extends FormRequest
         return $this->input('description');
     }
 
+    /**
+     * @return int
+     */
     public function getTeamId(): int
     {
         return (int)$this->input('team_id');
+    }
+
+    /**
+     * @return int
+     */
+    public function getObjectiveId(): int
+    {
+        return (int)$this->input('objective_id');
     }
 
     /**
@@ -115,10 +127,11 @@ class ProjectStoreRequest extends FormRequest
     }
 
     /**
-     * @return array
+     * @return UploadedFile|null
      */
-    public function getCategoriesIds(): array
+    public function getCover(): ? UploadedFile
     {
-        return $this->input('category', []);
+        return $this->file('cover');
     }
+
 }

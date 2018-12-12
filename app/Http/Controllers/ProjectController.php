@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
+use App\Objective;
 use App\Project;
 use App\Team;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +19,9 @@ use Illuminate\View\View;
  */
 class ProjectController extends Controller
 {
+
+    const COVER_DIRECTORY = 'projects';
+
     /**
      * ProjectController constructor.
      */
@@ -45,10 +49,10 @@ class ProjectController extends Controller
      */
     public function create(): View
     {
-        $categories = Category::all();
         $teams = Team::all();
+        $objectives = Objective::all();
 
-        return view('project.create', compact('categories', 'teams'));
+        return view('project.create', compact('teams', 'objectives'));
     }
 
     /**
@@ -61,17 +65,19 @@ class ProjectController extends Controller
     {
         $data = [
             'title' => $request->getTitle(),
+            'cover' => $request->getCover() ? $request->getCover()->store(self::COVER_DIRECTORY) : null,
             'description' => $request->getDescription(),
             'team_id' => $request->getTeamId(),
+            'objective_id' => $request->getObjectiveId(),
             'slug' => $request->getSlug(),
         ];
 
-        $project = Project::create($data);
-
-        $project->categories()->attach($request->getCategoriesIds());
+        Project::create($data);
 
 
-        return redirect()->route('project.index')->with('status', 'Project created successfully!');
+        return redirect()
+            ->route('project.index')
+            ->with('status', 'Project created successfully!');
     }
 
     /**
@@ -82,7 +88,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project): View
     {
-        return view('project.view', compact('project'));
+        $team = Team::all();
+        $objective = Objective::all();
+
+        return view('project.view', compact('project', 'team', 'objective'));
     }
 
     /**
@@ -93,10 +102,10 @@ class ProjectController extends Controller
      */
     public function edit(Project $project): View
     {
-        $categories = Category::all();
         $teams = Team::all();
+        $objectives = Objective::all();
 
-        return view('project.edit', compact('project', 'categories', 'teams'));
+        return view('project.edit', compact('project', 'teams', 'objectives'));
     }
 
     /**
@@ -111,9 +120,12 @@ class ProjectController extends Controller
         $project->title = $request->getTitle();
         $project->description = $request->getDescription();
         $project->team_id = $request->getTeamId();
+        $project->objective_id = $request->getObjectiveId();
         $project->slug = $request->getSlug();
 
-        $project->categories()->sync($request->getCategoriesIds());
+        if($request->getCover()){
+            $project->cover = $request->getCover()->store(self::COVER_DIRECTORY);
+        }
 
         $project->save();
 
