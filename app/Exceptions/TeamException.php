@@ -5,9 +5,9 @@ declare(strict_types = 1);
 namespace App\Exceptions;
 
 /**
- * Class ProjectException
+ * Class TeamException
  * @package App\Exceptions
  */
-class ProjectException extends ApiDataException
+class TeamException extends ApiDataException
 {
 }

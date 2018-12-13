@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Team whereTeam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Team whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Team whereUpdatedAt($value)
+ * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
+ * @method static findOrFail(int $teamId)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Member[] $members
  */

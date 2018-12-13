@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Objective whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Objective whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Objective whereUpdatedAt($value)
+ * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
+ * @method static findOrFail(int $objectiveId)
  * @mixin \Eloquent
  */
 class Objective extends Model

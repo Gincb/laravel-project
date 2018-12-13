@@ -48,6 +48,8 @@
                         @endforeach
                     </table>
 
+                        {{ $projects->links() }}
+
                 </div>
             </div>
         </div>

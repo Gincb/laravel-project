@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Plan whereTask($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Plan whereUpdatedAt($value)
  * @method static create(array $array)
+ * @method static findOrFail(int $planId)
+ * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
  * @mixin \Eloquent
  * @property int $id
  */

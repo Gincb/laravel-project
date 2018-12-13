@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Providers;
 
 use App\Service\UserService;
+use App\Services\API\ObjectiveService;
+use App\Services\API\ProjectService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Schema::defaultStringLength(191);
     }
@@ -27,13 +31,15 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        //
+        $this->registerServices();
     }
 
     private function registerServices(): void
     {
         $this->app->singleton(UserService::class);
+        $this->app->singleton(ProjectService::class);
+        $this->app->singleton(ObjectiveService::class);
     }
 }

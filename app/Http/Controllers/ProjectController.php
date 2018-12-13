@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace App\Http\Controllers;
 
-use App\Category;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Objective;
@@ -37,7 +36,7 @@ class ProjectController extends Controller
      */
     public function index(): View
     {
-        $projects = Project::all();
+        $projects = Project::paginate(2, ['*'], 'page');
 
         return view('project.list', compact('projects'));
     }

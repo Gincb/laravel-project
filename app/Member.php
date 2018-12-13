@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Member whereUpdatedAt($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Member wherePosition($value)
+ * @method static findOrFail(int $memberId)
+ * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
  */
 class Member extends Model
 {

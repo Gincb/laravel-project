@@ -29,6 +29,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property int|null $objective_id
  * @property-read \App\Objective|null $objectives
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereObjectiveId($value)
+ * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
+ * @method static findOrFail(int $projectId)
+ * @method static create(array $data)
  */
 class Project extends Model
 {
