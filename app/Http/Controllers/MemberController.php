@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberRequest;
 use App\Member;
+use App\Repositories\MemberRepository;
 use App\Team;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,13 +18,28 @@ use Illuminate\View\View;
 class MemberController extends Controller
 {
     /**
+     * @var MemberRepository
+     */
+    private $memberRepository;
+
+    /**
+     * MemberController constructor.
+     * @param MemberRepository $memberRepository
+     */
+    public function __construct(MemberRepository $memberRepository)
+    {
+        $this->memberRepository = $memberRepository;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return View
+     * @throws \Exception
      */
     public function index(): View
     {
-        $members = Member::all();
+        $members = $this->memberRepository->all();
 
         return view('member.list', compact('members'));
     }
@@ -43,10 +59,11 @@ class MemberController extends Controller
      *
      * @param MemberRequest $request
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function store(MemberRequest $request)
     {
-        Member::create([
+        $this->memberRepository->create([
             'first_name' => $request->getFirstName(),
             'last_name' => $request->getLastName(),
             'position' => $request->getPosition(),

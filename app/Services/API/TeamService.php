@@ -5,9 +5,11 @@ declare(strict_types = 1);
 namespace App\Services\API;
 
 use App\Exceptions\TeamException;
+use App\Repositories\TeamRepository;
 use App\Services\ApiService;
 use App\Team;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class TeamService
@@ -16,14 +18,28 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class TeamService extends ApiService
 {
     /**
-     * @param int $page
-     * @return LengthAwarePaginator
-     * @throws \App\Exceptions\ApiDataException
+     * @var TeamRepository
      */
-    public function getPaginateData(int $page = 1)
+    private $teamRepository;
+
+    /**
+     * TeamService constructor.
+     * @param TeamRepository $teamRepository
+     */
+    public function __construct(TeamRepository $teamRepository)
+    {
+        $this->teamRepository = $teamRepository;
+    }
+
+    /**
+     * @return LengthAwarePaginator|LengthAwarePaginator
+     * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
+     */
+    public function getPaginateData()
     {
         /** @var LengthAwarePaginator $team */
-        $teams = Team::paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $teams = $this->teamRepository->paginate();
 
         if ($teams->isEmpty()) {
             throw TeamException::noData();
@@ -33,14 +49,14 @@ class TeamService extends ApiService
     }
 
     /**
-     * @param int $page
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
      */
-    public function getFullData(int $page = 1): LengthAwarePaginator
+    public function getFullData(): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $teams */
-        $teams = Team::with(['members'])->paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $teams = $this->teamRepository->with(['members'])->paginate();
         if ($teams->isEmpty()) {
             throw TeamException::noData();
         }
@@ -49,10 +65,11 @@ class TeamService extends ApiService
 
     /**
      * @param int $teamId
-     * @return Team
+     * @return Team|Model
+     * @throws \Exception
      */
-    public function getById(int $teamId): Team
+    public function getById(int $teamId)
     {
-        return Team::findOrFail($teamId);
+        return $this->teamRepository->findOrFail($teamId);
     }
 }

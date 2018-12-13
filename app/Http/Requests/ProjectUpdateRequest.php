@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Http\Requests;
 
 use App\Project;
+use App\Repositories\ProjectRepository;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Str;
 
@@ -52,22 +53,19 @@ class ProjectUpdateRequest extends ProjectStoreRequest
 
     /**
      * @return bool
+     * @throws \Exception
      */
     protected function slugExists(): bool
     {
-        $slug = Project::whereSlug($this->getSlug())
-            ->where(
-                'id',
-                '!=',
-                $this->route()->parameter('project')->id
-            )
-            ->get();
+        /** @var ProjectRepository $projectRepository */
+        $projectRepository = app(ProjectRepository::class);
 
-        if(!empty($slug->toArray())){
-            return true;
-        }
+        $slug = $projectRepository->getBySlugAndNotId(
+            $this->getSlug(),
+            (int)$this->route()->parameter('project')
+        );
 
-        return false;
+        return !empty($slug);
     }
 
     /**

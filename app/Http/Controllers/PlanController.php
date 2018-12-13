@@ -6,20 +6,40 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlanRequest;
 use App\Plan;
+use App\Repositories\PlanRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Class PlanController
+ * @package App\Http\Controllers
+ */
 class PlanController extends Controller
 {
+    /**
+     * @var PlanRepository
+     */
+    private $planRepository;
+
+    /**
+     * PlanController constructor.
+     * @param PlanRepository $planRepository
+     */
+    public function __construct(PlanRepository $planRepository)
+    {
+        $this->planRepository = $planRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return View
+     * @throws \Exception
      */
     public function index(): View
     {
-        $plans = Plan::all();
+        $plans = $this->planRepository->all();
 
         return view('plan.list', compact('plans'));
     }
@@ -39,10 +59,11 @@ class PlanController extends Controller
      *
      * @param PlanRequest $request
      * @return RedirectResponse
+     * @throws \Exception
      */
     public function store(PlanRequest $request): RedirectResponse
     {
-        Plan::create([
+        $this->planRepository->create([
             'task' => $request->getTask(),
         ]);
 

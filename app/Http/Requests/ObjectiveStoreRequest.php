@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Http\Requests;
 
 use App\Objective;
+use App\Repositories\ObjectiveRepository;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -61,14 +62,16 @@ class ObjectiveStoreRequest extends FormRequest
 
     /**
      * @return bool
+     * @throws \Exception
      */
     protected function slugExists(): bool
     {
-        $slug = Objective::whereSlug($this->getSlug())->get();
-        if (!empty($slug->toArray())) {
-            return true;
-        }
-        return false;
+        /** @var ObjectiveRepository $objectiveRepository */
+        $objectiveRepository = app(ObjectiveRepository::class);
+
+        $slug = $objectiveRepository->getBySlug($this->getSlug());
+
+        return !empty($slug);
     }
 
     /**

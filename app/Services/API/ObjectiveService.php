@@ -6,8 +6,10 @@ namespace App\Services\API;
 
 use App\Exceptions\ObjectiveException;
 use App\Objective;
+use App\Repositories\ObjectiveRepository;
 use App\Services\ApiService;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ObjectiveService
@@ -16,14 +18,28 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ObjectiveService extends ApiService
 {
     /**
-     * @param int $page
-     * @return LengthAwarePaginator
-     * @throws \App\Exceptions\ApiDataException
+     * @var ObjectiveRepository
      */
-    public function getPaginateData(int $page = 1): LengthAwarePaginator
+    private $objectiveRepository;
+
+    /**
+     * ObjectiveService constructor.
+     * @param ObjectiveRepository $objectiveRepository
+     */
+    public function __construct(ObjectiveRepository $objectiveRepository)
+    {
+        $this->objectiveRepository = $objectiveRepository;
+    }
+
+    /**
+     * @return LengthAwarePaginator|LengthAwarePaginator
+     * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
+     */
+    public function getPaginateData()
     {
         /** @var LengthAwarePaginator $objective */
-        $objectives = Objective::paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $objectives = $this->objectiveRepository->paginate();
 
         if ($objectives->isEmpty()) {
             throw ObjectiveException::noData();
@@ -33,14 +49,14 @@ class ObjectiveService extends ApiService
     }
 
     /**
-     * @param int $page
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
      */
-    public function getFullData(int $page = 1): LengthAwarePaginator
+    public function getFullData(): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $objectives */
-        $objectives = Objective::with(['plans'])->paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $objectives = $this->objectiveRepository->with(['plans'])->paginate();
         if ($objectives->isEmpty()) {
             throw ObjectiveException::noData();
         }
@@ -49,10 +65,11 @@ class ObjectiveService extends ApiService
 
     /**
      * @param int $objectiveId
-     * @return Objective
+     * @return Objective|Model
+     * @throws \Exception
      */
-    public function getById(int $objectiveId): Objective
+    public function getById(int $objectiveId)
     {
-        return Objective::findOrFail($objectiveId);
+        return $this->objectiveRepository->findOrFail($objectiveId);
     }
 }

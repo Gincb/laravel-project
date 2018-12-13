@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Http\Requests;
 
+use App\Repositories\TeamRepository;
 use App\Team;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -61,14 +62,16 @@ class TeamStoreRequest extends FormRequest
 
     /**
      * @return bool
+     * @throws \Exception
      */
     protected function slugExists(): bool
     {
-        $slug = Team::whereSlug($this->getSlug())->get();
-        if (!empty($slug->toArray())) {
-            return true;
-        }
-        return false;
+        /** @var TeamRepository $teamRepository */
+        $teamRepository = app(TeamRepository::class);
+
+        $slug = $teamRepository->getBySlug($this->getSlug());
+
+        return !empty($slug);
     }
 
     /**

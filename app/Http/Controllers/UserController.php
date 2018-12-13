@@ -23,10 +23,12 @@ class UserController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function index()
     {
         $users = $this->userService->getPaginate();
+
         return view('user.list', compact('users'));
     }
 }

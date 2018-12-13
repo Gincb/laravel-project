@@ -8,6 +8,9 @@ use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Objective;
 use App\Project;
+use App\Repositories\ObjectiveRepository;
+use App\Repositories\ProjectRepository;
+use App\Repositories\TeamRepository;
 use App\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -18,25 +21,50 @@ use Illuminate\View\View;
  */
 class ProjectController extends Controller
 {
-
+    /**
+     *
+     */
     const COVER_DIRECTORY = 'projects';
 
     /**
-     * ProjectController constructor.
+     * @var ProjectRepository
      */
-    public function __construct()
+    private $projectRepository;
+
+    /**
+     * @var ObjectiveRepository
+     */
+    private $objectiveRepository;
+
+    /**
+     * @var TeamRepository
+     */
+    private $teamRepository;
+
+    /**
+     * ProjectController constructor.
+     * @param ProjectRepository $projectRepository
+     * @param ObjectiveRepository $objectiveRepository
+     * @param TeamRepository $teamRepository
+     */
+    public function __construct(ProjectRepository $projectRepository, ObjectiveRepository $objectiveRepository, TeamRepository $teamRepository)
     {
         $this->middleware('auth');
+        $this->projectRepository = $projectRepository;
+        $this->objectiveRepository = $objectiveRepository;
+        $this->teamRepository = $teamRepository;
     }
+
 
     /**
      * Display a listing of the resource.
      *
      * @return View
+     * @throws \Exception
      */
     public function index(): View
     {
-        $projects = Project::paginate(2, ['*'], 'page');
+        $projects = $this->projectRepository->paginate();
 
         return view('project.list', compact('projects'));
     }
@@ -45,11 +73,12 @@ class ProjectController extends Controller
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws \Exception
      */
     public function create(): View
     {
-        $teams = Team::all();
-        $objectives = Objective::all();
+        $teams = $this->teamRepository->all();
+        $objectives = $this->objectiveRepository->all();
 
         return view('project.create', compact('teams', 'objectives'));
     }
@@ -59,6 +88,7 @@ class ProjectController extends Controller
      *
      * @param ProjectStoreRequest $request
      * @return RedirectResponse
+     * @throws \Exception
      */
     public function store(ProjectStoreRequest $request): RedirectResponse
     {
@@ -71,7 +101,7 @@ class ProjectController extends Controller
             'slug' => $request->getSlug(),
         ];
 
-        Project::create($data);
+        $this->projectRepository->create($data);
 
 
         return redirect()
@@ -84,11 +114,12 @@ class ProjectController extends Controller
      *
      * @param Project $project
      * @return View
+     * @throws \Exception
      */
     public function show(Project $project): View
     {
-        $team = Team::all();
-        $objective = Objective::all();
+        $team = $this->teamRepository->all();
+        $objective = $this->objectiveRepository->all();
 
         return view('project.view', compact('project', 'team', 'objective'));
     }
@@ -98,11 +129,12 @@ class ProjectController extends Controller
      *
      * @param Project $project
      * @return View
+     * @throws \Exception
      */
     public function edit(Project $project): View
     {
-        $teams = Team::all();
-        $objectives = Objective::all();
+        $teams = $this->teamRepository->all();
+        $objectives = $this->objectiveRepository->all();
 
         return view('project.edit', compact('project', 'teams', 'objectives'));
     }

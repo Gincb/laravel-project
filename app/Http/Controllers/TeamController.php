@@ -2,25 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MemberRequest;
 use App\Http\Requests\TeamStoreRequest;
 use App\Http\Requests\TeamUpdateRequest;
 use App\Member;
+use App\Repositories\MemberRepository;
+use App\Repositories\TeamRepository;
 use App\Team;
 use App\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use phpDocumentor\Reflection\Types\Compound;
 
+/**
+ * Class TeamController
+ * @package App\Http\Controllers
+ */
 class TeamController extends Controller
 {
+    /**
+     * @var TeamRepository
+     */
+    private $teamRepository;
+
+    /**
+     * @var MemberRepository
+     */
+
+    private $memberRepository;
+
+    /**
+     * TeamController constructor.
+     * @param TeamRepository $teamRepository
+     * @param MemberRepository $memberRepository
+     */
+    public function __construct(TeamRepository $teamRepository, MemberRepository $memberRepository)
+    {
+        $this->teamRepository = $teamRepository;
+        $this->memberRepository = $memberRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return View
+     * @throws \Exception
      */
     public function index(): View
     {
-        $teams = Team::all();
+        $teams = $this->teamRepository->all();
 
         return view('team.list', compact('teams'));
     }
@@ -29,10 +59,11 @@ class TeamController extends Controller
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws \Exception
      */
     public function create(): View
     {
-        $members = Member::all();
+        $members = $this->memberRepository->all();
         return view('team.create', compact('members'));
     }
 
@@ -41,10 +72,11 @@ class TeamController extends Controller
      *
      * @param TeamStoreRequest $request
      * @return RedirectResponse
+     * @throws \Exception
      */
     public function store(TeamStoreRequest $request): RedirectResponse
     {
-        $team = Team::create([
+        $team = $this->teamRepository->create([
             'title' => $request->getTitle(),
             'slug' => $request->getSlug(),
         ]);
@@ -72,10 +104,11 @@ class TeamController extends Controller
      *
      * @param Team $team
      * @return View
+     * @throws \Exception
      */
     public function edit(Team $team): View
     {
-        $members = Member::all();
+        $members = $this->memberRepository->all();
 
         return view('team.edit', compact('team', 'members'));
     }

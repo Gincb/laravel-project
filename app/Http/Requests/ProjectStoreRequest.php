@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Http\Requests;
 
-use App\Project;
+use App\Repositories\ProjectRepository;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
@@ -68,22 +68,16 @@ class ProjectStoreRequest extends FormRequest
 
     /**
      * @return bool
+     * @throws \Exception
      */
     protected function slugExists(): bool
     {
-        $title = $this->getTitle();
+        /** @var ProjectRepository $projectRepository */
+        $projectRepository = app(ProjectRepository::class);
 
-        if(!$title){
-            return true;
-        }
+        $slug = $projectRepository->getBySlug($this->getSlug());
 
-        $slug = Project::whereSlug($title)->get();
-
-        if(!empty($slug->toArray())){
-            return true;
-        }
-
-        return false;
+        return !empty($slug);
     }
 
     /**

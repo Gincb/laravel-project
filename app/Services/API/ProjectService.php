@@ -6,7 +6,9 @@ namespace App\Services\API;
 
 use App\Exceptions\ProjectException;
 use App\Project;
+use App\Repositories\ProjectRepository;
 use App\Services\ApiService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -16,14 +18,28 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ProjectService extends ApiService
 {
     /**
-     * @param int $page
+     * @var ProjectRepository
+     */
+    private $projectRepository;
+
+    /**
+     * ProjectService constructor.
+     * @param ProjectRepository $projectRepository
+     */
+    public function __construct(ProjectRepository $projectRepository)
+    {
+        $this->projectRepository = $projectRepository;
+    }
+
+    /**
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
      */
-    public function getPaginateData(int $page = 1): LengthAwarePaginator
+    public function getPaginateData(): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $projects */
-        $projects = Project::paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $projects = $this->projectRepository->paginate();
 
         if ($projects->isEmpty()) {
             throw ProjectException::noData();
@@ -33,14 +49,14 @@ class ProjectService extends ApiService
     }
 
     /**
-     * @param int $page
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
      */
-    public function getFullData(int $page = 1): LengthAwarePaginator
+    public function getFullData(): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $projects */
-        $projects = Project::with(['objectives', 'teams'])->paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $projects = $this->projectRepository->with(['objectives', 'teams'])->paginate();
         if ($projects->isEmpty()) {
             throw ProjectException::noData();
         }
@@ -49,10 +65,11 @@ class ProjectService extends ApiService
 
     /**
      * @param int $projectId
-     * @return Project
+     * @return Project|Model
+     * @throws \Exception
      */
-    public function getById(int $projectId): Project
+    public function getById(int $projectId)
     {
-        return Project::findOrFail($projectId);
+        return $this->projectRepository->findOrFail($projectId);
     }
 }

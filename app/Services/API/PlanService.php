@@ -6,7 +6,9 @@ namespace App\Services\API;
 
 use App\Exceptions\PlanException;
 use App\Plan;
+use App\Repositories\PlanRepository;
 use App\Services\ApiService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -16,14 +18,28 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PlanService extends ApiService
 {
     /**
-     * @param int $page
+     * @var PlanRepository
+     */
+    private $planRepository;
+
+    /**
+     * PlanService constructor.
+     * @param PlanRepository $planRepository
+     */
+    public function __construct(PlanRepository $planRepository)
+    {
+        $this->planRepository = $planRepository;
+    }
+
+    /**
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
+     * @throws \Exception
      */
-    public function getPaginateData(int $page = 1)
+    public function getPaginateData(): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $plan */
-        $plan = Plan::paginate(self::PER_PAGE, ['*'], 'page', $page);
+        $plan = $this->planRepository->paginate();
 
         if ($plan->isEmpty()) {
             throw PlanException::noData();
@@ -34,10 +50,11 @@ class PlanService extends ApiService
 
     /**
      * @param int $planId
-     * @return Plan
+     * @return Plan|Model
+     * @throws \Exception
      */
-    public function getById(int $planId): Plan
+    public function getById(int $planId)
     {
-        return Plan::findOrFail($planId);
+        return $this->planRepository->findOrFail($planId);
     }
 }

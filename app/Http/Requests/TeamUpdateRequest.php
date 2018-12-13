@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Http\Requests;
 
+use App\Repositories\TeamRepository;
 use App\Team;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Str;
@@ -51,20 +52,19 @@ class TeamUpdateRequest extends TeamStoreRequest
 
     /**
      * @return bool
+     * @throws \Exception
      */
     protected function slugExists(): bool
     {
-        $slug = Team::whereSlug($this->getSlug())
-            ->where(
-                'id',
-                '!=',
-                $this->route()->parameter('team')->id
-            )
-            ->get();
-        if (!empty($slug->toArray())) {
-            return true;
-        }
-        return false;
+        /** @var TeamRepository $teamRepository */
+        $teamRepository = app(TeamRepository::class);
+
+        $slug = $teamRepository->getBySlugAndNotId(
+            $this->getSlug(),
+            (int)$this->route()->parameter('team')
+        );
+
+        return !empty($slug);
     }
 
     /**
