@@ -24,12 +24,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Member wherePosition($value)
  * @method static findOrFail(int $memberId)
  * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
+ * @property string|null $photo
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Member wherePhoto($value)
  */
 class Member extends Model
 {
     protected $fillable = [
-      'first_name',
-      'last_name',
-      'position',
+        'photo',
+        'first_name',
+        'last_name',
+        'position',
     ];
 }

@@ -17,19 +17,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'Front\\HomeController@index')->name('home');
+
+Route::get('projects', 'Front\\ProjectController@index')->name('front.projects');
+Route::get('project/{slug}', 'Front\\ProjectController@show')->name('front.project.slug');
+
+Route::get('members', 'Front\\MemberController@index')->name('front.members');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function() {
 
-Route::resource('project', 'ProjectController');
-Route::resource('team', 'TeamController');
-Route::resource('objective', 'ObjectiveController');
+    Route::get('/', 'AdminController@index')->name('admin.home');
 
-Route::group(['middleware' => ['auth']], function (){
+    Route::resource('project', 'ProjectController');
+    Route::resource('team', 'TeamController');
+    Route::resource('objective', 'ObjectiveController');
     Route::resource('user', 'UserController')->only(['index']);
     Route::resource('member', 'MemberController')->except(['show', 'destroy']);
     Route::resource('plan', 'PlanController')->except(['show', 'destroy']);
-
 });

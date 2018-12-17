@@ -16,9 +16,17 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('member.store') }}" method="post">
+                    <form action="{{ route('member.store') }}" method="post" enctype="multipart/form-data">
 
                         {{csrf_field()}}
+
+                        <div class="form-group">
+                            <label for="photo">{{ __('Photo') }}</label>
+                            <input id="photo" class="form-control" type="file" name="photo" accept=".jpg, .jpeg, .png">
+                            @if($errors->has('photo'))
+                                <div class="alert-danger">{{ $errors->first('photo') }}</div>
+                            @endif
+                        </div>
 
                         <div class="form-group">
                             <label for="first_name">{{ __('First name') }}:</label>

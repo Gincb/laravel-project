@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace App\Services\API;
 
 use App\Exceptions\MemberException;
-use App\Member;
 use App\Repositories\MemberRepository;
 use App\Services\ApiService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -33,14 +32,15 @@ class MemberService extends ApiService
     }
 
     /**
+     * @param int $page
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
      * @throws \Exception
      */
-    public function getPaginateData()
+    public function getPaginateData(int $page = 1): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $member */
-        $members = $this->memberRepository->paginate();
+        $members = $this->memberRepository->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         if ($members->isEmpty()) {
             throw MemberException::noData();
@@ -51,10 +51,10 @@ class MemberService extends ApiService
 
     /**
      * @param int $memberId
-     * @return Member|Model
+     * @return Model
      * @throws \Exception
      */
-    public function getById(int $memberId)
+    public function getById(int $memberId): Model
     {
         return $this->memberRepository->findOrFail($memberId);
     }

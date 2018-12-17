@@ -20,6 +20,7 @@
                     <table class="table">
                         <tr>
                             <th>ID</th>
+                            <th>Photo</th>
                             <th>First name</th>
                             <th>Last name</th>
                             <th>Position</th>
@@ -29,6 +30,11 @@
                         @foreach($members as $member)
                             <tr>
                                 <td>{{ $member->id }}</td>
+                                <td>
+                                    @if ($member->photo)
+                                        <img width="100" src="{{ Storage::url($member->photo) }}">
+                                    @endif
+                                </td>
                                 <td>{{ $member->first_name }}</td>
                                 <td>{{ $member->last_name }}</td>
                                 <td>{{ $member->position }}</td>

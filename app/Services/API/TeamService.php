@@ -7,7 +7,6 @@ namespace App\Services\API;
 use App\Exceptions\TeamException;
 use App\Repositories\TeamRepository;
 use App\Services\ApiService;
-use App\Team;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,14 +31,15 @@ class TeamService extends ApiService
     }
 
     /**
+     * @param int $page
      * @return LengthAwarePaginator|LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
      * @throws \Exception
      */
-    public function getPaginateData()
+    public function getPaginateData(int $page = 1): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $team */
-        $teams = $this->teamRepository->paginate();
+        $teams = $this->teamRepository->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         if ($teams->isEmpty()) {
             throw TeamException::noData();
@@ -65,10 +65,10 @@ class TeamService extends ApiService
 
     /**
      * @param int $teamId
-     * @return Team|Model
+     * @return Model
      * @throws \Exception
      */
-    public function getById(int $teamId)
+    public function getById(int $teamId): Model
     {
         return $this->teamRepository->findOrFail($teamId);
     }

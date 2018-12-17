@@ -16,10 +16,22 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('member.update', [$member->id]) }}" method="post">
+                    <form action="{{ route('member.update', [$member->id]) }}" method="post" enctype="multipart/form-data">
 
                         {{ method_field('put') }}
                         {{ csrf_field() }}
+
+                        <div class="form-group">
+                            <label for="photo">{{ __('Photo') }}</label>
+                            @if ($member->photo)
+                                <br>
+                                <img width="200" src="{{ Storage::url($member->photo) }}">
+                            @endif
+                            <input id="photo" class="form-control" type="file" name="photo" accept=".jpg, .jpeg, .png">
+                            @if($errors->has('photo'))
+                                <div class="alert-danger">{{ $errors->first('photo') }}</div>
+                            @endif
+                        </div>
 
                         <div class="form-group">
                             <label for="first_name">{{ __('First name') }}:</label>

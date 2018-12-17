@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace App\Services\API;
 
 use App\Exceptions\ProjectException;
-use App\Project;
 use App\Repositories\ProjectRepository;
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\Model;
@@ -32,14 +31,15 @@ class ProjectService extends ApiService
     }
 
     /**
+     * @param int $page
      * @return LengthAwarePaginator
      * @throws \App\Exceptions\ApiDataException
      * @throws \Exception
      */
-    public function getPaginateData(): LengthAwarePaginator
+    public function getPaginateData(int $page = 1): LengthAwarePaginator
     {
         /** @var LengthAwarePaginator $projects */
-        $projects = $this->projectRepository->paginate();
+        $projects = $this->projectRepository->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         if ($projects->isEmpty()) {
             throw ProjectException::noData();
@@ -65,10 +65,10 @@ class ProjectService extends ApiService
 
     /**
      * @param int $projectId
-     * @return Project|Model
+     * @return Model
      * @throws \Exception
      */
-    public function getById(int $projectId)
+    public function getById(int $projectId): Model
     {
         return $this->projectRepository->findOrFail($projectId);
     }

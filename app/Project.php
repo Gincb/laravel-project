@@ -32,6 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static paginate(int $PER_PAGE, array $array, string $string, int $page)
  * @method static findOrFail(int $projectId)
  * @method static create(array $data)
+ * @property string|null $cover
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereCover($value)
  */
 class Project extends Model
 {

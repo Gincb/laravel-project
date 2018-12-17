@@ -8,6 +8,7 @@ use App\Http\Requests\MemberRequest;
 use App\Member;
 use App\Repositories\MemberRepository;
 use App\Team;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,6 +18,11 @@ use Illuminate\View\View;
  */
 class MemberController extends Controller
 {
+    /**
+     *
+     */
+    const PHOTO_DIRECTORY = 'members';
+
     /**
      * @var MemberRepository
      */
@@ -58,12 +64,13 @@ class MemberController extends Controller
      * Store a newly created resource in storage.
      *
      * @param MemberRequest $request
-     * @return \Illuminate\Http\Response
+     * @return RedirectResponse
      * @throws \Exception
      */
-    public function store(MemberRequest $request)
+    public function store(MemberRequest $request): RedirectResponse
     {
         $this->memberRepository->create([
+            'photo' => $request->getPhoto() ? $request->getPhoto()->store(self::PHOTO_DIRECTORY) : null,
             'first_name' => $request->getFirstName(),
             'last_name' => $request->getLastName(),
             'position' => $request->getPosition(),
@@ -76,9 +83,9 @@ class MemberController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Member $member
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function edit(Member $member)
+    public function edit(Member $member): View
     {
         return view('member.edit', compact('member'));
     }
@@ -88,13 +95,19 @@ class MemberController extends Controller
      *
      * @param MemberRequest $request
      * @param Member $member
-     * @return \Illuminate\Http\Response
+     * @return RedirectResponse
      */
-    public function update(MemberRequest $request, Member $member)
+    public function update(MemberRequest $request, Member $member): RedirectResponse
     {
         $member->first_name = $request->getFirstName();
         $member->last_name = $request->getLastName();
         $member->position = $request->getPosition();
+
+        if($request->getPhoto()){
+            $member->photo = $request->getPhoto()->store(self::PHOTO_DIRECTORY);
+        }
+
+        $member->save();
 
         return redirect()->route('member.index')->with('status', 'Member added successfully!');
     }
